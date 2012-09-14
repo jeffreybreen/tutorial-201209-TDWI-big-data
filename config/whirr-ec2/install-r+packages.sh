@@ -21,13 +21,19 @@ sudo R --no-save << EOF
 install.packages(c('RJSONIO', 'itertools', 'digest', 'Rcpp', 'plyr'), repos="http://cran.revolutionanalytics.com", INSTALL_opts=c('--byte-compile') )
 EOF
 
-# install latest version of the rmr package from RHadoop's github repository:
+# if you always like to be up-to-date, you can install the latest version
+# of rmr directly from RHadoop's github repository:
+#
+# branch=master
+#
+# wget --no-check-certificate https://github.com/RevolutionAnalytics/RHadoop/tarball/$branch -O - | tar zx
+# mv RevolutionAnalytics-RHadoop* RHadoop
+# sudo R CMD INSTALL --byte-compile RHadoop/rmr/pkg/
 
-branch=master
+# but I'm usually not that adventurous:
 
-wget --no-check-certificate https://github.com/RevolutionAnalytics/RHadoop/tarball/$branch -O - | tar zx
-mv RevolutionAnalytics-RHadoop* RHadoop
-sudo R CMD INSTALL --byte-compile RHadoop/rmr/pkg/
+wget --no-check-certificate https://github.com/downloads/RevolutionAnalytics/RHadoop/rmr_1.3.1.tar.gz
+sudo R CMD INSTALL rmr_1.3.1.tar.gz
 
 sudo su << EOF1 
 cat >> /etc/profile <<EOF
