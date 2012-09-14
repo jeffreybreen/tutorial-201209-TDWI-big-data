@@ -1,0 +1,1 @@
+library(rmr)small.ints = 1:1000small.int.path = to.dfs(1:1000)out = mapreduce(input = small.int.path,                 map = function(k,v) keyval(v, v^2) )df = as.data.frame( from.dfs( out, structured=TRUE) )colnames(df) = c('n', 'n2')
