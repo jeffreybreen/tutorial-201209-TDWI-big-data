@@ -90,9 +90,76 @@ $ wget https://github.com/downloads/RevolutionAnalytics/RHadoop/rmr_1.3.1.tar.gz
 $ sudo R CMD INSTALL rmr_1.3.1.tar.gz
 ```
 
+Taking it to the Cloud: Launching Hadoop on Amazon EC2
+======================================================
+
+In the final presentaion, we use Apache Whirr to create on-demand Hadoop clusters on Amazon's EC2 cloud computing service.
 
 
-Apache Whirr 0.8
+Install Apache Whirr
+--------------------
 
-http://apache.mirrors.pair.com/whirr/whirr-0.8.0/whirr-0.8.0.tar.gz
+We'll use Apache Whirr to create and manage Hadoop clusters on EC2, so first we need to install it into our VM:
 
+```{bash}
+$ wget http://apache.mirrors.pair.com/whirr/whirr-0.8.0/whirr-0.8.0.tar.gz
+$ tar zxf whirr-0.8.0.tar.gz
+$ export PATH="~/whirr-0.8.0/bin:$PATH"
+```
+
+
+Set Environment Variables with AWS Credentials
+----------------------------------------------
+
+```{bash}
+$ export AWS_ACCESS_KEY_ID = "your access key id here"
+$ export AWS_SECRET_ACCESS_KEY = "your secret access key here"
+```
+
+Create a Key Pair
+-----------------
+
+```{bash}
+$ ssh-keygen -t rsa -P ""
+```
+
+Launching the cluster
+---------------------
+
+```{bash}
+$ whirr launch-cluster --config hadoop-ec2.properties
+$ whirr run-script --script install-r+packages.sh --config hadoop-ec2.properties
+```
+
+Switch the local Hadoop client tools to access the remote cluster
+-----------------------------------------------------------------
+
+```{bash}
+sudo /usr/sbin/alternatives --display hadoop-0.20-conf
+sudo mkdir /etc/hadoop-0.20/conf.ec2
+sudo cp -r /etc/hadoop-0.20/conf.empty /etc/hadoop-0.20/conf.ec2
+sudo rm -f /etc/hadoop-0.20/conf.ec2/*-site.xml
+sudo cp ~/.whirr/hadoop-ec2/hadoop-site.xml /etc/hadoop-0.20/conf.ec2/
+sudo /usr/sbin/alternatives --install /etc/hadoop-0.20/conf hadoop-0.20-conf /etc/hadoop-0.20/conf.ec2 30
+sudo /usr/sbin/alternatives --set hadoop-0.20-conf /etc/hadoop-0.20/conf.ec2
+```
+
+
+Launch the proxy:
+
+```{bash}
+~/.whirr/hadoop-ec2/hadoop-proxy.sh
+```
+
+When done, control-c to kill the proxy, then shut down the cluster:
+
+
+```{bash}
+whirr destroy-cluster --config hadoop-ec2.properties
+```
+
+To switch the VM client tools back to your local Hadoop:
+
+```{bash}
+sudo /usr/sbin/alternatives --set hadoop-0.20-conf /etc/hadoop-0.20/conf.pseudo
+```
