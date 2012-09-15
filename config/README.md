@@ -1,6 +1,11 @@
 Configuring Cloudera's Demo VM for the Tutorial
 ===============================================
 
+Short version: if you're running CDH3, run the install-r.sh script in this directory:
+
+```{bash}
+$ ./install-r.sh
+```
 
 Download Cloudera's Demo VM
 ----------------------------
