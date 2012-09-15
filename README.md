@@ -8,6 +8,7 @@ Contents
 
 This repository has three main directories:
 
+* **bin** -- scripts to populate and clear HDFS
 * **config** -- instructions and configuration files to set up the Cloudera demo VM for the tutorial
 * **R** -- all the R code we will work through
 * **data** -- sample data 
