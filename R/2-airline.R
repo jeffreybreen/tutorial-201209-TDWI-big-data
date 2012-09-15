@@ -16,7 +16,7 @@ library(rmr)
 # Set "LOCAL" variable to T to execute using rmr's local backend.
 # Otherwise, use Hadoop (which needs to be running, correctly configured, etc.)
 
-LOCAL=F
+LOCAL=T
 
 if (LOCAL)
 {
@@ -131,6 +131,7 @@ mr.year.market.enroute_time = function (input, output) {
 	mapreduce(input = input,
 			  output = output,
 			  input.format = asa.csvtextinputformat,
+			  output.format='csv', # note to self: 'csv' for data, 'text' for bug
 			  map = mapper.year.market.enroute_time,
 			  reduce = reducer.year.market.enroute_time,
 			  backend.parameters = list( 
@@ -141,10 +142,21 @@ mr.year.market.enroute_time = function (input, output) {
 
 out = mr.year.market.enroute_time(hdfs.data, hdfs.out)
 
+# There seems to be a bug in 1.3.1 -- I can't seem to fetch the results 
+# when running against the cluster (which is sort of a problem...)
+# Let's take this opportunity to show off mapreduce's output.format
+# and view results on disk with 'hadoop fs -text airline/out/part-00000 | head"
 
-results.df = as.data.frame( from.dfs(out, structured=T) )
-colnames(results.df) = c('year', 'market', 'flights', 'scheduled', 'actual', 'in.air')
+if (LOCAL)
+{
+	results.df = as.data.frame( from.dfs(out, structured=T) )
+	colnames(results.df) = c('year', 'market', 'flights', 'scheduled', 'actual', 'in.air')
 
-print(head(results.df))
+	print(head(results.df))
+}
+
+
+# "Big Data in, small results out" -- it's easy enough to save the results
+# to disk as a native R object for later analysis:
 
 # save(results.df, file="out/enroute.time.RData")
