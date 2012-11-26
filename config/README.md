@@ -7,6 +7,12 @@ Short version: if you're running CDH3, run the install-r.sh script in this direc
 $ ./install-r.sh
 ```
 
+If you're running CDH4, run the install-r-CDH4.sh script in this directory:
+
+```{bash}
+$ ./install-r-CDH4.sh
+```
+
 Download Cloudera's Demo VM
 ----------------------------
 
