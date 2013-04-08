@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+out
+README.html
+R/.gitignore
+*.log
+from Marty
